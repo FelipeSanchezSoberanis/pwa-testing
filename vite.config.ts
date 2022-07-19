@@ -1,26 +1,39 @@
 import { fileURLToPath, URL } from "node:url";
 
 import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
+import Vue from "@vitejs/plugin-vue";
 import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    vue(),
+    Vue(),
     VitePWA({
-      srcDir: "src",
+      mode: "production",
+      base: "/",
+      includeAssets: ["favicon.svg"],
       manifest: {
-        short_name: "VueJS",
+        name: "PWA Router",
+        short_name: "PWA Router",
+        theme_color: "#ffffff",
         icons: [
-          { src: "src/assets/vue.png", sizes: "192x192", type: "image/png" },
-          { src: "src/assets/vue.png", sizes: "512x512", type: "image/png" },
+          {
+            src: "vue.png", // <== don't add slash, for testing
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "/vue.png", // <== don't remove slash, for testing
+            sizes: "512x512",
+            type: "image/png",
+          },
+          {
+            src: "vue.png", // <== don't add slash, for testing
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable",
+          },
         ],
-        start_url: "/",
-        display: "standalone",
-        prefer_related_applications: false,
-        theme_color: "#B12A34",
-        background_color: "#B12A34",
       },
     }),
   ],
