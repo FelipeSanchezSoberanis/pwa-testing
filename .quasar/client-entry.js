@@ -11,140 +11,99 @@
  * Boot files are your "main.js"
  **/
 
+import { createApp } from "vue";
 
-import { createApp } from 'vue'
+import "@quasar/extras/roboto-font/roboto-font.css";
 
-
-
-
-
-
-
-import '@quasar/extras/roboto-font/roboto-font.css'
-
-import '@quasar/extras/material-icons/material-icons.css'
-
-
-
+import "@quasar/extras/material-icons/material-icons.css";
 
 // We load Quasar stylesheet file
-import 'quasar/dist/quasar.sass'
+import "quasar/dist/quasar.sass";
 
+import "src/css/app.scss";
 
+import createQuasarApp from "./app.js";
+import quasarUserOptions from "./quasar-user-options.js";
 
+import "app/src-pwa/register-service-worker";
 
-import 'src/css/app.scss'
+console.info("[Quasar] Running PWA.");
 
-
-import createQuasarApp from './app.js'
-import quasarUserOptions from './quasar-user-options.js'
-
-
-
-
-
-
-console.info('[Quasar] Running SPA.')
-
-
-
-
-const publicPath = `/`
-
-async function start ({
-  app,
-  router
-  , store
-}, bootFiles) {
-  
-
-  
-  let hasRedirected = false
-  const getRedirectUrl = url => {
-    try { return router.resolve(url).href }
-    catch (err) {}
-
-    return Object(url) === url
-      ? null
-      : url
-  }
-  const redirect = url => {
-    hasRedirected = true
-
-    if (typeof url === 'string' && /^https?:\/\//.test(url)) {
-      window.location.href = url
-      return
-    }
-
-    const href = getRedirectUrl(url)
-
-    // continue if we didn't fail to resolve the url
-    if (href !== null) {
-      window.location.href = href
-      
-    }
-  }
-
-  const urlPath = window.location.href.replace(window.location.origin, '')
-
-  for (let i = 0; hasRedirected === false && i < bootFiles.length; i++) {
-    try {
-      await bootFiles[i]({
-        app,
-        router,
-        store,
-        ssrContext: null,
-        redirect,
-        urlPath,
-        publicPath
-      })
-    }
-    catch (err) {
-      if (err && err.url) {
-        redirect(err.url)
-        return
-      }
-
-      console.error('[Quasar] boot error:', err)
-      return
-    }
-  }
-
-  if (hasRedirected === true) {
-    return
-  }
-  
-
-  app.use(router)
-  
-
-  
-
-    
-
-    
-      app.mount('#q-app')
-    
-
-    
-
-  
-
+// Needed only for iOS PWAs
+if (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+    !window.MSStream &&
+    window.navigator.standalone
+) {
+    import("@quasar/fastclick");
 }
 
-createQuasarApp(createApp, quasarUserOptions)
+const publicPath = `/`;
 
-  .then(app => {
-    return Promise.all([
-      
-      import('boot/axios')
-      
-    ]).then(bootFiles => {
-      const boot = bootFiles
-        .map(entry => entry.default)
-        .filter(entry => typeof entry === 'function')
+async function start({ app, router, store }, bootFiles) {
+    let hasRedirected = false;
+    const getRedirectUrl = (url) => {
+        try {
+            return router.resolve(url).href;
+        } catch (err) {}
 
-      start(app, boot)
-    })
-  })
+        return Object(url) === url ? null : url;
+    };
+    const redirect = (url) => {
+        hasRedirected = true;
 
+        if (typeof url === "string" && /^https?:\/\//.test(url)) {
+            window.location.href = url;
+            return;
+        }
+
+        const href = getRedirectUrl(url);
+
+        // continue if we didn't fail to resolve the url
+        if (href !== null) {
+            window.location.href = href;
+        }
+    };
+
+    const urlPath = window.location.href.replace(window.location.origin, "");
+
+    for (let i = 0; hasRedirected === false && i < bootFiles.length; i++) {
+        try {
+            await bootFiles[i]({
+                app,
+                router,
+                store,
+                ssrContext: null,
+                redirect,
+                urlPath,
+                publicPath
+            });
+        } catch (err) {
+            if (err && err.url) {
+                redirect(err.url);
+                return;
+            }
+
+            console.error("[Quasar] boot error:", err);
+            return;
+        }
+    }
+
+    if (hasRedirected === true) {
+        return;
+    }
+
+    app.use(router);
+
+    app.mount("#q-app");
+}
+
+createQuasarApp(createApp, quasarUserOptions).then((app) => {
+    return Promise.all([import("boot/axios")]).then((bootFiles) => {
+        const boot = bootFiles
+            .map((entry) => entry.default)
+            .filter((entry) => typeof entry === "function");
+
+        start(app, boot);
+    });
+});
