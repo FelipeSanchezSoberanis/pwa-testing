@@ -13,8 +13,11 @@ export default defineConfig({
       base: "/",
       includeAssets: ["favicon.svg"],
       manifest: {
+        background_color: "#000000",
+        display: "fullscreen",
         name: "PWA Router",
         short_name: "PWA Router",
+        start_url: "/",
         theme_color: "#ffffff",
         icons: [
           {
