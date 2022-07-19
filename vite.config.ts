@@ -18,7 +18,7 @@ export default defineConfig({
         name: "PWA Router",
         short_name: "PWA Router",
         start_url: "/",
-        theme_color: "#ffffff",
+        theme_color: "#000000",
         icons: [
           {
             src: "vue-192.png",
@@ -29,12 +29,6 @@ export default defineConfig({
             src: "vue-512.png",
             sizes: "512x512",
             type: "image/png",
-          },
-          {
-            src: "vue-512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
           },
         ],
       },
