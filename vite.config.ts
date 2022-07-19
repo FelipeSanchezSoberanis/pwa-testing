@@ -18,6 +18,8 @@ export default defineConfig({
         start_url: "/",
         display: "standalone",
         prefer_related_applications: false,
+        theme_color: "#B12A34",
+        background_color: "#B12A34",
       },
     }),
   ],
