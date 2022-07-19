@@ -6,17 +6,7 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    VitePWA({
-      mode: "production",
-      base: "/",
-      srcDir: "src",
-      filename: "sw.js",
-      includeAssets: ["/favicon.png"],
-      strategies: "generateSW",
-    }),
-  ],
+  plugins: [vue(), VitePWA()],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
