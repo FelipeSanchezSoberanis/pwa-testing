@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
+      srcDir: "src",
       manifest: {
         short_name: "VueJS",
         icons: [
